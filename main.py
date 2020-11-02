@@ -6,8 +6,17 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 
 id_of_gay = [606626665, 458050531]
 
-gay_msgs = ['а ты таблетки принял?', 'бомбануло', 'угаманись хахлинка',
-            'опять троллишь', 'удали', 'хрюкни еще что-нибудь', 'в палату, шизоид!', 'Не хрюкать!!', 'хохла спросить забыли']
+try:
+    with open('messages.txt', 'r') as f:
+        gay_msgs = [i.strip('\n') for i in f.read().split(';') if i.strip('\n')]
+except FileNotFoundError:
+    open('messages.txt', 'a').close()
+    gay_msgs = None
+
+if not gay_msgs:
+    print('Почему messages.txt пустой? а? м? Что мне присылать?\n'
+          'А ну бегом заполнять!')
+    sys.exit()
 
 vk_session = vk_api.VkApi(token=sys.argv[1])
 longpoll = VkLongPoll(vk_session)
