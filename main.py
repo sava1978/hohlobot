@@ -2,8 +2,10 @@ import vk_api
 import random
 import sys
 from vk_api.longpoll import VkLongPoll, VkEventType
+import json
 
-id_of_gay = [1]
+config = json.load(open('config.json'))
+id_of_gay = config['users']
 
 try:
     with open('messages.txt', 'r') as f:
@@ -17,7 +19,7 @@ if not gay_msgs:
           'А ну бегом заполнять!')
     sys.exit()
 
-vk_session = vk_api.VkApi(token=sys.argv[1])
+vk_session = vk_api.VkApi(token=config['token'])
 longpoll = VkLongPoll(vk_session)
 vk = vk_session.get_api()
 
