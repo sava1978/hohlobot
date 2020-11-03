@@ -1,10 +1,11 @@
 import vk_api
 import random
-import time
 import sys
 from vk_api.longpoll import VkLongPoll, VkEventType
+import json
 
-id_of_gay = [606626665, 458050531]
+config = json.load(open('config.json'))
+id_of_gay = config['users']
 
 try:
     with open('messages.txt', 'r') as f:
@@ -18,18 +19,14 @@ if not gay_msgs:
           'А ну бегом заполнять!')
     sys.exit()
 
-vk_session = vk_api.VkApi(token=sys.argv[1])
+vk_session = vk_api.VkApi(token=config['token'])
 longpoll = VkLongPoll(vk_session)
 vk = vk_session.get_api()
 
 for event in longpoll.listen():
-    if event.type == VkEventType.MESSAGE_NEW and hasattr(event, 'chat_id'):
-        try:
-            if event.user_id in id_of_gay:
-                vk.messages.send(chat_id=event.chat_id,
-                                 message=random.choice(gay_msgs),
-                                 reply_to=event.message_id,
-                                 random_id=random.randint(1, 999999))
-        except KeyError:
-            pass
-        time.sleep(4)
+    if event.type == VkEventType.MESSAGE_NEW and event.from_chat:
+        if event.user_id in id_of_gay:
+            vk.messages.send(chat_id=event.chat_id,
+                             message=random.choice(gay_msgs),
+                             reply_to=event.message_id,
+                             random_id=0)
